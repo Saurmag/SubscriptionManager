@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">Subsciption Manager</string>
+
+    <string name="subscription_price_hint">Enter the price</string>
+    <string name="subscription_title_hint">Enter the subscription name</string>
+    <string name="title">Title</string>
+    <string name="price">Price</string>
+    <string name="add_button">Add</string>
+    <string name="new_subscription">New Subscription</string>
+    <string name="delete_subscription">Delete Subscription</string>
+    <string name="delete_button">Delete</string>
+    <string name="or">or</string>
+    <string name="update_button">Update</string>
+    <string name="subscriptions_knock">Subscriptions</string>
+    <string name="profile_knock">Profile</string>
+    <string name="add_knock">New Subscription</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="profit">Your Profit :</string>
+    <string name="usd_month">USD/Month</string>
+    <string name="user_profit">0</string>
+    <string name="amount">Amount :</string>
+    <string name="preAmount">100$</string>
+    <string name="spend_on_subscriptions">on subscriptions, you spend :</string>
+    <string name="ofIncome">of income</string>
+    <string name="login">Login</string>
+    <string name="sign_to_continue">Please sign in to  continue</string>
+    <string name="password_hint">PASSWORD</string>
+    <string name="email_hint">EMAIL</string>
+    <string name="full_name_hint">FULL NAME</string>
+    <string name="login_profit">YOUR PROFIT</string>
+    <string name="have_not_account">Don\'t have an account?</string>
+    <string name="have_account">Already have an account?</string>
+    <string name="sign_up">Sign up</string>
+    <string name="sign_in">Sign in</string>
+    <string name="email_content_desc">Enter Email</string>
+    <string name="password_content_desc">Enter Password</string>
+    <string name="full_name_content_desc">Enter Full Name</string>
+    <string name="confirm_password_content_desc">Enter Confirm Password</string>
+    <string name="create_profile">Create Account</string>
+    <string name="fill_input">Please fill the input blow here</string>
+    <string name="confirm_password_hint">CONFIRM PASSWORD</string>
+    <string name="backToLogin">Tap to back in Login</string>
+    <string name="percentage_symbol">%1$s\%%</string>
+
+</resources>

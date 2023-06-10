@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/subscriptionsListFragment">
+
+    <fragment
+        android:id="@+id/subscriptionsListFragment"
+        android:name="com.example.subscriptionmanager.ui.SubscriptionsListFragment"
+        android:label="SubscriptionsListFragment"
+        tools:layout="@layout/subscription_list_fragment">
+        <action
+            android:id="@+id/show_update_subscription"
+            app:destination="@id/updateSubscriptionFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createSubscriptionFragment"
+        android:name="com.example.subscriptionmanager.ui.CreateSubscriptionFragment"
+        android:label="CreateSubscriptionFragment"
+        tools:layout="@layout/create_subscription_fragment"/>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.subscriptionmanager.ui.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/updateSubscriptionFragment"
+        android:name="com.example.subscriptionmanager.ui.UpdateSubscriptionFragment"
+        android:label="UpdateSubscriptionFragment" >
+        <argument
+            android:name="subscriptionID"
+            app:argType="java.util.UUID" />
+    </fragment>
+
+</navigation>
