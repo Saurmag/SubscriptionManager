@@ -23,7 +23,6 @@ class CreateSubscriptionViewModel(subscriptionID: UUID) : ViewModel() {
 
     init {
         viewModelScope.launch {
-
             _subscription.value = repository.getSubscription(subscriptionID)
         }
     }
@@ -35,7 +34,6 @@ class CreateSubscriptionViewModel(subscriptionID: UUID) : ViewModel() {
 
             repository.updateSubscription(subscription)
         }
-
         Log.d("ON_CLEARED","CURRENT SUBSCRIPTION - ${subscription.value?.id}")
     }
 
@@ -48,6 +46,13 @@ class CreateSubscriptionViewModel(subscriptionID: UUID) : ViewModel() {
     }
 
     suspend fun deleteSubscription(id: UUID) = repository.deleteSubscription(id)
+
+    fun isValid(): Boolean {
+        val value = checkNotNull(subscription.value)
+        return !((value.price == 0) || (value.title.isBlank()))
+    }
+
+    var isAdd = false
 }
 
 

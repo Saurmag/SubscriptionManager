@@ -1,8 +1,6 @@
 package com.example.subscriptionmanager.ui
 
-import android.graphics.Rect
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.subscriptionmanager.databinding.SubscriptionItemListBinding

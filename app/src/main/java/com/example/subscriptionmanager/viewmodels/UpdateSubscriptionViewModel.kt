@@ -1,5 +1,6 @@
 package com.example.subscriptionmanager.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.*
 
+private const val TAG = "UPDATE_SUBSCRIPTION"
+
 class UpdateSubscriptionViewModel(subscriptionID : UUID) : ViewModel() {
 
     private val repository = SubscriptionRepository.get()
@@ -21,9 +24,7 @@ class UpdateSubscriptionViewModel(subscriptionID : UUID) : ViewModel() {
     val subscription : StateFlow<Subscription?> = _subscription.asStateFlow()
 
     init {
-
         viewModelScope.launch {
-
             _subscription.value = repository.getSubscription(subscriptionID)
         }
     }
@@ -31,8 +32,8 @@ class UpdateSubscriptionViewModel(subscriptionID : UUID) : ViewModel() {
     override fun onCleared() {
         super.onCleared()
 
+        Log.d(TAG, "onCleared viewModel")
         subscription.value?.let { subscription ->
-
             repository.updateSubscription(subscription)
         }
     }

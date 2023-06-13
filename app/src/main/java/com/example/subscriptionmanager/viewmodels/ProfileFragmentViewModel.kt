@@ -7,7 +7,7 @@ import com.example.subscriptionmanager.model.SubscriptionRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-private const val PROFILE_FRAGMENT_VIEWMODEL = "PROFILE_FRAGMENT_VIEWMODEL"
+private const val TAG = "PROFILE_FRAGMENT_VIEWMODEL"
 
 class ProfileFragmentViewModel : ViewModel() {
 
@@ -46,7 +46,7 @@ class ProfileFragmentViewModel : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        Log.d(PROFILE_FRAGMENT_VIEWMODEL, "ON CLEARED")
+        Log.d(TAG, "ON CLEARED")
     }
 
     fun updateFullName(fullName: String) {

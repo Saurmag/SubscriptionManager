@@ -1,13 +1,11 @@
 package com.example.subscriptionmanager.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,6 +15,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.subscriptionmanager.R
 import com.example.subscriptionmanager.databinding.CreateSubscriptionFragmentBinding
 import com.example.subscriptionmanager.model.Subscription
@@ -27,7 +26,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 import java.util.*
 
-private const val CREATE_SUBSCRIPTION_FRAGMENT = "CREATE_SUBSCRIPTION_FRAGMENT"
+private const val TAG = "CREATE_SUBSCRIPTION_FRAGMENT"
 
 class CreateSubscriptionFragment : Fragment() {
 
@@ -46,8 +45,7 @@ class CreateSubscriptionFragment : Fragment() {
         price = 0
     )
 
-    private val createSubscriptionViewModel: CreateSubscriptionViewModel by viewModels {
-
+    private val viewModel: CreateSubscriptionViewModel by viewModels {
         CreateSubscriptionViewModelFactory(subscriptionID = subscription.id)
     }
 
@@ -55,36 +53,8 @@ class CreateSubscriptionFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-
             viewModelForAddSubscription.addSubscription(subscription = subscription)
-
         }
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        val callback = object : OnBackPressedCallback(true){
-
-            override fun handleOnBackPressed() {
-
-                binding.apply {
-
-                    if( (editName.text.isNotBlank()) || (editPrice.text.isNotBlank())) {
-
-                        editName.setText("")
-                        editPrice.setText("")
-                    }
-                    else {
-
-                        findNavController().popBackStack(R.id.createSubscriptionFragment, true)
-                    }
-
-                }
-            }
-        }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
     override fun onCreateView(
@@ -104,47 +74,34 @@ class CreateSubscriptionFragment : Fragment() {
         binding.apply {
 
             editName.doOnTextChanged { text, _, _, _ ->
-
-                createSubscriptionViewModel.updateSubscription { oldSubscription ->
-
-                    oldSubscription.copy(title  = text.toString())
+                viewModel.updateSubscription { oldSubscription ->
+                    oldSubscription.copy(title = text.toString())
                 }
             }
 
             editPrice.doOnTextChanged { text, _, _, _ ->
-
                 if (text.toString().isNotBlank()) {
-
-                    createSubscriptionViewModel.updateSubscription { oldSubscription ->
-
+                    viewModel.updateSubscription { oldSubscription ->
                         oldSubscription.copy(price = text.toString().toInt())
                     }
                 }
             }
 
             addButton.setOnClickListener {
-
-                if ((editPrice.text.isBlank()) || (editPrice.text.toString() == "0") || (editName.text.isBlank())) {
-
-                    Toast.makeText(context, "Check the data you entered", Toast.LENGTH_SHORT).show()
-
-                } else {
-
+                if (viewModel.isValid()) {
+                    viewModel.isAdd = true
                     val navController = findNavController()
-
                     addButtonNavigation(navController)
+                } else {
+                    Toast.makeText(context, "Check the data you entered", Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
-                createSubscriptionViewModel.subscription.collect { currentSubscription ->
-
+                viewModel.subscription.collect { currentSubscription ->
                     currentSubscription?.let {
-
                         updateUi(it)
                     }
                 }
@@ -154,47 +111,34 @@ class CreateSubscriptionFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-
-        if (
-            (createSubscriptionViewModel.subscription.value?.price == 0) ||
-            (createSubscriptionViewModel.subscription.value?.title?.isBlank()!!)
-        ) {
-
-            Log.d(CREATE_SUBSCRIPTION_FRAGMENT, "THIS SUBSCRIPTION WILL BE DELETED - ${createSubscriptionViewModel.subscription.value}")
-
-            defaultDeleteSubscription(createSubscriptionViewModel.subscription.value?.id!!)
-
-            Log.d(CREATE_SUBSCRIPTION_FRAGMENT, "THIS SUBSCRIPTION WAS DELETED - ${createSubscriptionViewModel.subscription.value}")
-        }
-
-        if (subscription.id != createSubscriptionViewModel.subscription.value?.id) {
-
-            Log.d(CREATE_SUBSCRIPTION_FRAGMENT, "THIS SUBSCRIPTION WILL BE DELETED - ${subscription.id}")
-
-            defaultDeleteSubscription(subscription.id)
-
-            Log.d(CREATE_SUBSCRIPTION_FRAGMENT, "THIS SUBSCRIPTION WAS DELETED - $${subscription.id}")
-
+        if (!viewModel.isValid() || !viewModel.isAdd) {
+            Log.d(TAG, "THIS SUBSCRIPTION WILL BE DELETED - ${viewModel.subscription.value}")
+            defaultDeleteSubscription(viewModel.subscription.value?.id!!)
+            Log.d(TAG, "THIS SUBSCRIPTION WAS DELETED - ${viewModel.subscription.value}")
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
-        Log.d("ON_DESTROY | $CREATE_SUBSCRIPTION_FRAGMENT", "DELETE CURRENT SUBSCRIPTION - ${subscription.id}")
+        Log.d("ON_DESTROY | $TAG", "CURRENT SUBSCRIPTION - ${subscription.id}")
+        Log.d(TAG, "$viewModel")
 
+        val bottomNavigationView = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        val navController = findNavController()
+
+        bottomNavigationView?.setupWithNavController(navController)
         _binding = null
     }
 
     private fun updateUi(subscription: Subscription) {
-        Log.d("$CREATE_SUBSCRIPTION_FRAGMENT | COLLECT SUBSCRIPTION UUID", "UUID - ${subscription.id}")
-        Log.d("$CREATE_SUBSCRIPTION_FRAGMENT | COLLECT SUBSCRIPTION", "TITLE - ${subscription.title} | PRICE - ${subscription.price}")
+        Log.d("$TAG | COLLECT SUBSCRIPTION UUID", "UUID - ${subscription.id}")
+        Log.d("$TAG | COLLECT SUBSCRIPTION", "TITLE - ${subscription.title} | PRICE - ${subscription.price}")
     }
 
     private fun addButtonNavigation(navController: NavController) {
 
         val startDestination = navController.graph.startDestinationId
-
         val previousDestination = navController.previousBackStackEntry?.destination?.id
 
         if (previousDestination != startDestination) {
@@ -213,7 +157,7 @@ class CreateSubscriptionFragment : Fragment() {
 
     private fun defaultDeleteSubscription(id: UUID){
         viewLifecycleOwner.lifecycleScope.launch {
-            createSubscriptionViewModel.deleteSubscription(id)
+            viewModel.deleteSubscription(id)
         }
     }
 
@@ -222,20 +166,17 @@ class CreateSubscriptionFragment : Fragment() {
         val bottomNavigationView = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)
 
         bottomNavigationView?.setOnItemSelectedListener { menuItem ->
-
             when(menuItem.itemId) {
 
                 R.id.subscriptionsListFragment -> {
 
                     findNavController().popBackStack(R.id.createSubscriptionFragment, true)
-
                     true
                 }
 
                 R.id.createSubscriptionFragment -> {
 
                     findNavController().navigate(R.id.createSubscriptionFragment)
-
                     true
                 }
 
@@ -246,13 +187,10 @@ class CreateSubscriptionFragment : Fragment() {
                             .setPopUpTo(R.id.subscriptionsListFragment, true)
                             .build()
                     )
-
                     true
                 }
-
                 else -> false
             }
         }
     }
-
 }

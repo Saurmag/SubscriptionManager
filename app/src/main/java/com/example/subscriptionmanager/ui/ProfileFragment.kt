@@ -17,7 +17,7 @@ import com.example.subscriptionmanager.viewmodels.ProfileFragmentUiState
 import com.example.subscriptionmanager.viewmodels.ProfileFragmentViewModel
 import kotlinx.coroutines.launch
 
-private const val PROFILE_FRAGMENT = "PROFILE FRAGMENT"
+private const val TAG = "PROFILE FRAGMENT"
 
 class ProfileFragment : Fragment() {
 
@@ -66,7 +66,7 @@ class ProfileFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        Log.d(PROFILE_FRAGMENT, "ON DESTROY")
+        Log.d(TAG, "ON DESTROY")
     }
 
     private fun uiState(state: ProfileFragmentUiState){
@@ -88,7 +88,7 @@ class ProfileFragment : Fragment() {
 
             if (fullName.isNotBlank()) testAvatar.text = fullName.first().toString()
 
-            Log.d(PROFILE_FRAGMENT, "Percentage - $percentage / Amount - $amount / Profit - $profit")
+            Log.d(TAG, "Percentage - $percentage / Amount - $amount / Profit - $profit")
 
             percentageText.text = String.format(getString(R.string.percentage_symbol), percentage)
 

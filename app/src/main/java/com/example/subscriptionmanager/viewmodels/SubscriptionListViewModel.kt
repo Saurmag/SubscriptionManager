@@ -22,18 +22,14 @@ class SubscriptionListViewModel : ViewModel() {
         get() = _subscriptions.asStateFlow()
 
     init {
-
         viewModelScope.launch {
-
             repository.getSubscriptions().collect {
-
                 _subscriptions.value = it
             }
         }
     }
 
     suspend fun addSubscription(subscription: Subscription) {
-
         repository.addSubscription(subscription)
     }
 
